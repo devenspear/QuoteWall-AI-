@@ -4,13 +4,24 @@ struct QuoteEditorView: View {
     let quote: Quote
     @Environment(\.dismiss) private var dismiss
     
+    // MARK: - Services
+    @StateObject private var imageGenerator = ImageGenerator()
+    @StateObject private var photoSaver = PhotoLibrarySaver()
+    
     // MARK: - Customization State
     @State private var selectedBackgroundColor = Color.blue
     @State private var selectedFontSize: CGFloat = 24
     @State private var selectedFontWeight: Font.Weight = .medium
     @State private var textAlignment: TextAlignment = .center
-    @State private var showingColorPicker = false
-    @State private var showingFontOptions = false
+    @State private var selectedWallpaperSize: ImageGenerator.WallpaperSize = .iPhonePortrait
+    
+    // MARK: - UI State
+    @State private var showingShareSheet = false
+    @State private var showingSaveConfirmation = false
+    @State private var generatedWallpaper: UIImage?
+    @State private var isGenerating = false
+    @State private var showingErrorAlert = false
+    @State private var errorMessage = ""
     
     // MARK: - Available Options
     private let backgroundColors: [Color] = [
@@ -22,6 +33,10 @@ struct QuoteEditorView: View {
     private let fontWeights: [(String, Font.Weight)] = [
         ("Light", .light), ("Regular", .regular), ("Medium", .medium), 
         ("Semibold", .semibold), ("Bold", .bold), ("Heavy", .heavy)
+    ]
+    
+    private let wallpaperSizes: [ImageGenerator.WallpaperSize] = [
+        .iPhonePortrait, .iPhoneLandscape, .iPadPortrait, .square
     ]
     
     var body: some View {
@@ -51,11 +66,41 @@ struct QuoteEditorView: View {
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("Save") {
-                        // TODO: Implement save functionality
-                        print("💾 Save wallpaper")
+                    Button("Export") {
+                        generateAndExportWallpaper()
                     }
                     .fontWeight(.semibold)
+                    .disabled(isGenerating)
+                }
+            }
+            .sheet(isPresented: $showingShareSheet) {
+                if let wallpaper = generatedWallpaper {
+                    ShareSheet.forQuoteWallpaper(wallpaper, quote: quote) { completed in
+                        if completed {
+                            showingSaveConfirmation = true
+                        }
+                    }
+                }
+            }
+            .alert("Export Status", isPresented: $showingSaveConfirmation) {
+                Button("OK") { }
+            } message: {
+                Text("Wallpaper exported successfully!")
+            }
+            .alert("Error", isPresented: $showingErrorAlert) {
+                Button("OK") { }
+            } message: {
+                Text(errorMessage)
+            }
+            .onChange(of: photoSaver.saveStatus) { _, newStatus in
+                switch newStatus {
+                case .success:
+                    showingSaveConfirmation = true
+                case .error(let message):
+                    errorMessage = message
+                    showingErrorAlert = true
+                default:
+                    break
                 }
             }
         }
@@ -88,6 +133,16 @@ struct QuoteEditorView: View {
                 }
                 .padding(24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                
+                // Generation overlay
+                if isGenerating {
+                    Rectangle()
+                        .fill(.black.opacity(0.3))
+                        .overlay(
+                            ProgressView("Generating...")
+                                .foregroundColor(.white)
+                        )
+                }
             }
         }
     }
@@ -95,6 +150,35 @@ struct QuoteEditorView: View {
     // MARK: - Customization Controls
     private var customizationControls: some View {
         VStack(spacing: 24) {
+            // Wallpaper Size Selection
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Wallpaper Size")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(wallpaperSizes, id: \.displayName) { size in
+                            Text(size.displayName)
+                                .font(.system(size: 14, weight: selectedWallpaperSize.displayName == size.displayName ? .bold : .regular))
+                                .foregroundColor(selectedWallpaperSize.displayName == size.displayName ? .white : .primary)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(selectedWallpaperSize.displayName == size.displayName ? Color.orange : Color.gray.opacity(0.2))
+                                )
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        selectedWallpaperSize = size
+                                    }
+                                }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            
             // Background Colors
             VStack(alignment: .leading, spacing: 12) {
                 Text("Background Color")
@@ -218,7 +302,7 @@ struct QuoteEditorView: View {
     private var actionButtons: some View {
         VStack(spacing: 16) {
             Button(action: {
-                // TODO: Generate AI background
+                // TODO: Generate AI background (Phase 3)
                 print("🎨 Generate AI background")
             }) {
                 HStack {
@@ -232,14 +316,21 @@ struct QuoteEditorView: View {
                 .cornerRadius(12)
                 .fontWeight(.semibold)
             }
+            .disabled(true) // Will enable in Phase 3
+            .opacity(0.6)
             
             Button(action: {
-                // TODO: Export wallpaper
-                print("📱 Export wallpaper")
+                generateAndExportWallpaper()
             }) {
                 HStack {
-                    Image(systemName: "square.and.arrow.up")
-                    Text("Export Wallpaper")
+                    if isGenerating {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    Text(isGenerating ? "Generating..." : "Export Wallpaper")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -248,6 +339,95 @@ struct QuoteEditorView: View {
                 .cornerRadius(12)
                 .fontWeight(.semibold)
             }
+            .disabled(isGenerating)
+            
+            Button(action: {
+                generateAndSaveToPhotos()
+            }) {
+                HStack {
+                    if photoSaver.saveStatus == .saving {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "photo")
+                    }
+                    Text(photoSaver.saveStatus == .saving ? "Saving..." : "Save to Photos")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.indigo)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+                .fontWeight(.semibold)
+            }
+            .disabled(photoSaver.saveStatus == .saving || isGenerating)
+        }
+    }
+    
+    // MARK: - Generation Methods
+    private func generateAndExportWallpaper() {
+        generateWallpaper { image in
+            self.generatedWallpaper = image
+            self.showingShareSheet = true
+        }
+    }
+    
+    private func generateAndSaveToPhotos() {
+        generateWallpaper { image in
+            self.photoSaver.saveImageToPhotos(image)
+        }
+    }
+    
+    private func generateWallpaper(completion: @escaping (UIImage) -> Void) {
+        isGenerating = true
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            let config = ImageGenerator.WallpaperConfig(
+                quote: self.quote,
+                backgroundColor: UIColor(self.selectedBackgroundColor),
+                fontSize: self.selectedFontSize,
+                fontWeight: self.convertToUIFontWeight(self.selectedFontWeight),
+                textAlignment: self.convertToNSTextAlignment(self.textAlignment),
+                size: self.selectedWallpaperSize
+            )
+            
+            if let image = self.imageGenerator.generateWallpaper(config: config) {
+                DispatchQueue.main.async {
+                    self.isGenerating = false
+                    completion(image)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.isGenerating = false
+                    self.errorMessage = "Failed to generate wallpaper"
+                    self.showingErrorAlert = true
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    private func convertToUIFontWeight(_ weight: Font.Weight) -> UIFont.Weight {
+        switch weight {
+        case .ultraLight: return .ultraLight
+        case .thin: return .thin
+        case .light: return .light
+        case .regular: return .regular
+        case .medium: return .medium
+        case .semibold: return .semibold
+        case .bold: return .bold
+        case .heavy: return .heavy
+        case .black: return .black
+        default: return .medium
+        }
+    }
+    
+    private func convertToNSTextAlignment(_ alignment: TextAlignment) -> NSTextAlignment {
+        switch alignment {
+        case .leading: return .left
+        case .center: return .center
+        case .trailing: return .right
         }
     }
 }
