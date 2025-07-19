@@ -7,6 +7,7 @@ struct QuoteEditorView: View {
     // MARK: - Services
     @StateObject private var imageGenerator = ImageGenerator()
     @StateObject private var photoSaver = PhotoLibrarySaver()
+    @StateObject private var openAIService = OpenAIService()
     
     // MARK: - Customization State
     @State private var selectedBackgroundColor = Color.blue
@@ -14,6 +15,7 @@ struct QuoteEditorView: View {
     @State private var selectedFontWeight: Font.Weight = .medium
     @State private var textAlignment: TextAlignment = .center
     @State private var selectedWallpaperSize: ImageGenerator.WallpaperSize = .iPhonePortrait
+    @State private var aiGeneratedBackground: UIImage?
     
     // MARK: - UI State
     @State private var showingShareSheet = false
@@ -22,6 +24,7 @@ struct QuoteEditorView: View {
     @State private var isGenerating = false
     @State private var showingErrorAlert = false
     @State private var errorMessage = ""
+    @State private var showingSettings = false
     
     // MARK: - Available Options
     private let backgroundColors: [Color] = [
@@ -70,7 +73,7 @@ struct QuoteEditorView: View {
                         generateAndExportWallpaper()
                     }
                     .fontWeight(.semibold)
-                    .disabled(isGenerating)
+                    .disabled(isGenerating || openAIService.isGeneratingImage)
                 }
             }
             .sheet(isPresented: $showingShareSheet) {
@@ -82,13 +85,20 @@ struct QuoteEditorView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showingSettings) {
+                SettingsView()
+            }
             .alert("Export Status", isPresented: $showingSaveConfirmation) {
                 Button("OK") { }
             } message: {
                 Text("Wallpaper exported successfully!")
             }
             .alert("Error", isPresented: $showingErrorAlert) {
-                Button("OK") { }
+                Button("OK") { 
+                    if errorMessage.contains("API key") {
+                        showingSettings = true
+                    }
+                }
             } message: {
                 Text(errorMessage)
             }
@@ -110,9 +120,16 @@ struct QuoteEditorView: View {
     private var wallpaperPreview: some View {
         GeometryReader { geometry in
             ZStack {
-                // Background
-                selectedBackgroundColor
-                    .ignoresSafeArea()
+                // Background (AI or color)
+                if let aiBackground = aiGeneratedBackground {
+                    Image(uiImage: aiBackground)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .clipped()
+                } else {
+                    selectedBackgroundColor
+                        .ignoresSafeArea()
+                }
                 
                 // Quote Text
                 VStack(spacing: 12) {
@@ -135,11 +152,11 @@ struct QuoteEditorView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 // Generation overlay
-                if isGenerating {
+                if isGenerating || openAIService.isGeneratingImage {
                     Rectangle()
                         .fill(.black.opacity(0.3))
                         .overlay(
-                            ProgressView("Generating...")
+                            ProgressView(openAIService.isGeneratingImage ? "Generating AI Background..." : "Generating...")
                                 .foregroundColor(.white)
                         )
                 }
@@ -150,6 +167,29 @@ struct QuoteEditorView: View {
     // MARK: - Customization Controls
     private var customizationControls: some View {
         VStack(spacing: 24) {
+            // AI Background Section
+            if let aiBackground = aiGeneratedBackground {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        Text("AI Background")
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        
+                        Spacer()
+                        
+                        Button("Remove") {
+                            aiGeneratedBackground = nil
+                        }
+                        .foregroundColor(.red)
+                        .font(.caption)
+                    }
+                    
+                    Text("✨ Using AI-generated background")
+                        .font(.caption)
+                        .foregroundColor(.green)
+                }
+            }
+            
             // Wallpaper Size Selection
             VStack(alignment: .leading, spacing: 12) {
                 Text("Wallpaper Size")
@@ -179,27 +219,29 @@ struct QuoteEditorView: View {
                 }
             }
             
-            // Background Colors
-            VStack(alignment: .leading, spacing: 12) {
-                Text("Background Color")
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                    ForEach(backgroundColors.indices, id: \.self) { index in
-                        let color = backgroundColors[index]
-                        Circle()
-                            .fill(color)
-                            .frame(width: 40, height: 40)
-                            .overlay(
-                                Circle()
-                                    .stroke(selectedBackgroundColor == color ? Color.primary : Color.clear, lineWidth: 3)
-                            )
-                            .onTapGesture {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    selectedBackgroundColor = color
+            // Background Colors (only show if no AI background)
+            if aiGeneratedBackground == nil {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Background Color")
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                    
+                    LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+                        ForEach(backgroundColors.indices, id: \.self) { index in
+                            let color = backgroundColors[index]
+                            Circle()
+                                .fill(color)
+                                .frame(width: 40, height: 40)
+                                .overlay(
+                                    Circle()
+                                        .stroke(selectedBackgroundColor == color ? Color.primary : Color.clear, lineWidth: 3)
+                                )
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        selectedBackgroundColor = color
+                                    }
                                 }
-                            }
+                        }
                     }
                 }
             }
@@ -302,12 +344,17 @@ struct QuoteEditorView: View {
     private var actionButtons: some View {
         VStack(spacing: 16) {
             Button(action: {
-                // TODO: Generate AI background (Phase 3)
-                print("🎨 Generate AI background")
+                generateAIBackground()
             }) {
                 HStack {
-                    Image(systemName: "sparkles")
-                    Text("Generate AI Background")
+                    if openAIService.isGeneratingImage {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "sparkles")
+                    }
+                    Text(openAIService.isGeneratingImage ? "Generating..." : "Generate AI Background")
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -316,8 +363,7 @@ struct QuoteEditorView: View {
                 .cornerRadius(12)
                 .fontWeight(.semibold)
             }
-            .disabled(true) // Will enable in Phase 3
-            .opacity(0.6)
+            .disabled(openAIService.isGeneratingImage || isGenerating)
             
             Button(action: {
                 generateAndExportWallpaper()
@@ -339,7 +385,7 @@ struct QuoteEditorView: View {
                 .cornerRadius(12)
                 .fontWeight(.semibold)
             }
-            .disabled(isGenerating)
+            .disabled(isGenerating || openAIService.isGeneratingImage)
             
             Button(action: {
                 generateAndSaveToPhotos()
@@ -361,11 +407,23 @@ struct QuoteEditorView: View {
                 .cornerRadius(12)
                 .fontWeight(.semibold)
             }
-            .disabled(photoSaver.saveStatus == .saving || isGenerating)
+            .disabled(photoSaver.saveStatus == .saving || isGenerating || openAIService.isGeneratingImage)
         }
     }
     
     // MARK: - Generation Methods
+    private func generateAIBackground() {
+        openAIService.generateBackground(for: quote) { result in
+            switch result {
+            case .success(let image):
+                aiGeneratedBackground = image
+            case .failure(let error):
+                errorMessage = error.localizedDescription
+                showingErrorAlert = true
+            }
+        }
+    }
+    
     private func generateAndExportWallpaper() {
         generateWallpaper { image in
             self.generatedWallpaper = image
@@ -389,7 +447,8 @@ struct QuoteEditorView: View {
                 fontSize: self.selectedFontSize,
                 fontWeight: self.convertToUIFontWeight(self.selectedFontWeight),
                 textAlignment: self.convertToNSTextAlignment(self.textAlignment),
-                size: self.selectedWallpaperSize
+                size: self.selectedWallpaperSize,
+                backgroundImage: self.aiGeneratedBackground
             )
             
             if let image = self.imageGenerator.generateWallpaper(config: config) {
