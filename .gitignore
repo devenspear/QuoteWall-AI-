@@ -1,0 +1,10 @@
+# Xcode build artifacts
+QuoteWallAI/build/
+QuoteWallAI/*.xcuserdata
+QuoteWallAI/*.xcworkspace
+
+# macOS
+.DS_Store
+
+# Logs
+*.log

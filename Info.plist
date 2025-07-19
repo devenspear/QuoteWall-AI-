@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Basic App Information -->
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>QuoteWall AI</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	
+	<!-- iOS Version Requirements -->
+	<key>LSMinimumSystemVersion</key>
+	<string>17.0</string>
+	<key>MinimumOSVersion</key>
+	<string>17.0</string>
+	
+	<!-- Required Device Capabilities -->
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	
+	<!-- Supported Interface Orientations -->
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+	</array>
+	
+	<!-- iPad Specific Orientations -->
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	
+	<!-- Scene Configuration for SwiftUI -->
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	
+	<!-- Privacy Usage Descriptions -->
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>QuoteWall AI needs access to save your beautiful quote wallpapers to your Photos library. Your photos are never accessed or viewed by the app.</string>
+	
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>QuoteWall AI needs access to save your created wallpapers to your Photos library. We only save images you create, never access existing photos.</string>
+	
+	<!-- Network Usage -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>api.openai.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.2</string>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
+		</dict>
+	</dict>
+	
+	<!-- App Category -->
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.graphics-design</string>
+	
+	<!-- Document Types -->
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeName</key>
+			<string>Image</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>public.image</string>
+				<string>public.png</string>
+				<string>public.jpeg</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Exported Type Identifiers -->
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIdentifier</key>
+			<string>com.quotewall.wallpaper</string>
+			<key>UTTypeDescription</key>
+			<string>QuoteWall AI Wallpaper</string>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.image</string>
+				<string>public.png</string>
+			</array>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>qwallpaper</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
+	
+	<!-- URL Schemes -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.quotewall.urlscheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>quotewall</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- App Store Information -->
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2024 QuoteWall AI. All rights reserved.</string>
+	
+	<!-- Background Modes (if needed for downloads) -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>background-processing</string>
+	</array>
+	
+	<!-- Launch Screen -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
+		<key>UIColorName</key>
+		<string>LaunchScreenBackground</string>
+	</dict>
+	
+	<!-- Status Bar -->
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	
+	<!-- Appearance -->
+	<key>UIUserInterfaceStyle</key>
+	<string>Automatic</string>
+	
+	<!-- Keyboard and Input -->
+	<key>UIKeyboardSupport</key>
+	<true/>
+	
+	<!-- Accessibility -->
+	<key>UIAccessibilityEnabledByDefault</key>
+	<true/>
+	
+	<!-- File Sharing -->
+	<key>UIFileSharingEnabled</key>
+	<false/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<false/>
+	
+	<!-- iTunes File Sharing -->
+	<key>UISupportsDocumentBrowser</key>
+	<false/>
+	
+	<!-- Advertising Identifier -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app does not track users for advertising purposes.</string>
+	
+	<!-- Location (Not used, but good to be explicit) -->
+	<key>NSLocationUsageDescription</key>
+	<string>This app does not use location services.</string>
+	
+	<!-- Camera (Not used, but good to be explicit) -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app does not use the camera.</string>
+	
+	<!-- Microphone (Not used, but good to be explicit) -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app does not use the microphone.</string>
+	
+	<!-- Contacts (Not used, but good to be explicit) -->
+	<key>NSContactsUsageDescription</key>
+	<string>This app does not access your contacts.</string>
+	
+	<!-- Calendars (Not used, but good to be explicit) -->
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app does not access your calendar.</string>
+	
+	<!-- Reminders (Not used, but good to be explicit) -->
+	<key>NSRemindersUsageDescription</key>
+	<string>This app does not access your reminders.</string>
+	
+	<!-- Face ID / Touch ID -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>Use Face ID to securely access your stored API keys.</string>
+</dict>
+</plist> 
