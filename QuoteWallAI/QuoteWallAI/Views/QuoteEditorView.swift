@@ -4,50 +4,258 @@ struct QuoteEditorView: View {
     let quote: Quote
     @Environment(\.dismiss) private var dismiss
     
+    // MARK: - Customization State
+    @State private var selectedBackgroundColor = Color.blue
+    @State private var selectedFontSize: CGFloat = 24
+    @State private var selectedFontWeight: Font.Weight = .medium
+    @State private var textAlignment: TextAlignment = .center
+    @State private var showingColorPicker = false
+    @State private var showingFontOptions = false
+    
+    // MARK: - Available Options
+    private let backgroundColors: [Color] = [
+        .blue, .purple, .pink, .red, .orange, .yellow, .green, .teal, .indigo,
+        .black, .gray, .brown, Color(.systemBlue), Color(.systemPurple)
+    ]
+    
+    private let fontSizes: [CGFloat] = [16, 18, 20, 22, 24, 26, 28, 32, 36, 40]
+    private let fontWeights: [(String, Font.Weight)] = [
+        ("Light", .light), ("Regular", .regular), ("Medium", .medium), 
+        ("Semibold", .semibold), ("Bold", .bold), ("Heavy", .heavy)
+    ]
+    
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                Text("Quote Editor")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
+            VStack(spacing: 0) {
+                // MARK: - Live Preview
+                wallpaperPreview
+                    .frame(height: 400)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .shadow(radius: 8)
+                    .padding()
                 
-                Text("Coming Soon!")
-                    .font(.title2)
-                    .foregroundStyle(.secondary)
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Selected Quote:")
-                        .font(.headline)
-                    
-                    Text(quote.text)
-                        .font(.body)
-                        .padding()
-                        .background(.quaternary)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    
-                    if let author = quote.author {
-                        Text("— \(author)")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                // MARK: - Customization Controls
+                ScrollView {
+                    VStack(spacing: 20) {
+                        customizationControls
+                        actionButtons
                     }
+                    .padding()
                 }
-                .padding()
-                
-                Spacer()
             }
-            .padding()
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button("Close") {
+                    Button("Cancel") {
                         dismiss()
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Save") {
+                        // TODO: Implement save functionality
+                        print("💾 Save wallpaper")
+                    }
+                    .fontWeight(.semibold)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Live Preview
+    private var wallpaperPreview: some View {
+        GeometryReader { geometry in
+            ZStack {
+                // Background
+                selectedBackgroundColor
+                    .ignoresSafeArea()
+                
+                // Quote Text
+                VStack(spacing: 12) {
+                    Text(quote.text)
+                        .font(.system(size: selectedFontSize, weight: selectedFontWeight))
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(textAlignment)
+                        .lineLimit(nil)
+                        .shadow(color: .black.opacity(0.3), radius: 2, x: 1, y: 1)
+                    
+                    if let author = quote.author {
+                        Text("— \(author)")
+                            .font(.system(size: selectedFontSize * 0.7, weight: .light))
+                            .foregroundColor(.white.opacity(0.9))
+                            .multilineTextAlignment(textAlignment)
+                            .shadow(color: .black.opacity(0.3), radius: 1, x: 1, y: 1)
+                    }
+                }
+                .padding(24)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+    }
+    
+    // MARK: - Customization Controls
+    private var customizationControls: some View {
+        VStack(spacing: 24) {
+            // Background Colors
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Background Color")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+                    ForEach(backgroundColors.indices, id: \.self) { index in
+                        let color = backgroundColors[index]
+                        Circle()
+                            .fill(color)
+                            .frame(width: 40, height: 40)
+                            .overlay(
+                                Circle()
+                                    .stroke(selectedBackgroundColor == color ? Color.primary : Color.clear, lineWidth: 3)
+                            )
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    selectedBackgroundColor = color
+                                }
+                            }
+                    }
+                }
+            }
+            
+            // Font Size
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Font Size")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(fontSizes, id: \.self) { size in
+                            Text("\(Int(size))")
+                                .font(.system(size: 16, weight: selectedFontSize == size ? .bold : .regular))
+                                .foregroundColor(selectedFontSize == size ? .white : .primary)
+                                .frame(width: 40, height: 40)
+                                .background(
+                                    Circle()
+                                        .fill(selectedFontSize == size ? Color.blue : Color.gray.opacity(0.2))
+                                )
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        selectedFontSize = size
+                                    }
+                                }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            
+            // Font Weight
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Font Weight")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
+                        ForEach(fontWeights, id: \.0) { weight in
+                            Text(weight.0)
+                                .font(.system(size: 14, weight: selectedFontWeight == weight.1 ? .bold : .regular))
+                                .foregroundColor(selectedFontWeight == weight.1 ? .white : .primary)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 20)
+                                        .fill(selectedFontWeight == weight.1 ? Color.blue : Color.gray.opacity(0.2))
+                                )
+                                .onTapGesture {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        selectedFontWeight = weight.1
+                                    }
+                                }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+            
+            // Text Alignment
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Text Alignment")
+                    .font(.headline)
+                    .foregroundStyle(.primary)
+                
+                HStack(spacing: 20) {
+                    alignmentButton(alignment: .leading, icon: "text.alignleft", title: "Left")
+                    alignmentButton(alignment: .center, icon: "text.aligncenter", title: "Center")
+                    alignmentButton(alignment: .trailing, icon: "text.alignright", title: "Right")
+                }
+            }
+        }
+    }
+    
+    private func alignmentButton(alignment: TextAlignment, icon: String, title: String) -> some View {
+        VStack(spacing: 8) {
+            Image(systemName: icon)
+                .font(.title2)
+                .foregroundColor(textAlignment == alignment ? .white : .primary)
+                .frame(width: 50, height: 50)
+                .background(
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(textAlignment == alignment ? Color.blue : Color.gray.opacity(0.2))
+                )
+            
+            Text(title)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .onTapGesture {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                textAlignment = alignment
+            }
+        }
+    }
+    
+    // MARK: - Action Buttons
+    private var actionButtons: some View {
+        VStack(spacing: 16) {
+            Button(action: {
+                // TODO: Generate AI background
+                print("🎨 Generate AI background")
+            }) {
+                HStack {
+                    Image(systemName: "sparkles")
+                    Text("Generate AI Background")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.purple)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+                .fontWeight(.semibold)
+            }
+            
+            Button(action: {
+                // TODO: Export wallpaper
+                print("📱 Export wallpaper")
+            }) {
+                HStack {
+                    Image(systemName: "square.and.arrow.up")
+                    Text("Export Wallpaper")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.green)
+                .foregroundColor(.white)
+                .cornerRadius(12)
+                .fontWeight(.semibold)
             }
         }
     }
 }
 
 #Preview {
-    QuoteEditorView(quote: Quote(text: "Sample quote", author: "Author", categories: ["Test"]))
+    QuoteEditorView(quote: Quote(
+        text: "The only way to do great work is to love what you do.",
+        author: "Steve Jobs",
+        categories: ["Success", "Motivation"]
+    ))
 } 
