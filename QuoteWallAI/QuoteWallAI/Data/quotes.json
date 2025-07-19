@@ -1,0 +1,322 @@
+{
+  "quotes": [
+    {
+      "id": "success-001",
+      "text": "The only way to do great work is to love what you do.",
+      "author": "Steve Jobs",
+      "categories": ["Success", "Motivation", "Work"]
+    },
+    {
+      "id": "success-002", 
+      "text": "Innovation distinguishes between a leader and a follower.",
+      "author": "Steve Jobs",
+      "categories": ["Innovation", "Leadership", "Success"]
+    },
+    {
+      "id": "life-001",
+      "text": "Your time is limited, don't waste it living someone else's life.",
+      "author": "Steve Jobs", 
+      "categories": ["Life", "Wisdom", "Authenticity"]
+    },
+    {
+      "id": "dreams-001",
+      "text": "The future belongs to those who believe in the beauty of their dreams.",
+      "author": "Eleanor Roosevelt",
+      "categories": ["Dreams", "Future", "Belief"]
+    },
+    {
+      "id": "courage-001",
+      "text": "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+      "author": "Winston Churchill",
+      "categories": ["Success", "Courage", "Perseverance"]
+    },
+    {
+      "id": "motivation-001",
+      "text": "The only impossible journey is the one you never begin.",
+      "author": "Tony Robbins",
+      "categories": ["Motivation", "Journey", "Beginning"]
+    },
+    {
+      "id": "wisdom-001",
+      "text": "It is during our darkest moments that we must focus to see the light.",
+      "author": "Aristotle",
+      "categories": ["Wisdom", "Hope", "Strength"]
+    },
+    {
+      "id": "change-001",
+      "text": "Be yourself; everyone else is already taken.",
+      "author": "Oscar Wilde",
+      "categories": ["Authenticity", "Self", "Wisdom"]
+    },
+    {
+      "id": "action-001",
+      "text": "The way to get started is to quit talking and begin doing.",
+      "author": "Walt Disney",
+      "categories": ["Action", "Beginning", "Success"]
+    },
+    {
+      "id": "optimism-001",
+      "text": "The pessimist sees difficulty in every opportunity. The optimist sees opportunity in every difficulty.",
+      "author": "Winston Churchill",
+      "categories": ["Optimism", "Opportunity", "Perspective"]
+    },
+    {
+      "id": "learning-001",
+      "text": "Live as if you were to die tomorrow. Learn as if you were to live forever.",
+      "author": "Mahatma Gandhi",
+      "categories": ["Learning", "Life", "Wisdom"]
+    },
+    {
+      "id": "success-003",
+      "text": "It is better to fail in originality than to succeed in imitation.",
+      "author": "Herman Melville",
+      "categories": ["Success", "Originality", "Authenticity"]
+    },
+    {
+      "id": "dreams-002",
+      "text": "The future starts today, not tomorrow.",
+      "author": "Pope John Paul II",
+      "categories": ["Future", "Action", "Today"]
+    },
+    {
+      "id": "motivation-002",
+      "text": "Your limitation—it's only your imagination.",
+      "author": "Unknown",
+      "categories": ["Motivation", "Imagination", "Limits"]
+    },
+    {
+      "id": "success-004",
+      "text": "Great things never come from comfort zones.",
+      "author": "Unknown",
+      "categories": ["Success", "Growth", "Challenge"]
+    },
+    {
+      "id": "persistence-001",
+      "text": "Don't stop when you're tired. Stop when you're done.",
+      "author": "Unknown",
+      "categories": ["Persistence", "Determination", "Success"]
+    },
+    {
+      "id": "mindset-001",
+      "text": "Wake up with determination. Go to bed with satisfaction.",
+      "author": "Unknown",
+      "categories": ["Mindset", "Determination", "Satisfaction"]
+    },
+    {
+      "id": "dreams-003",
+      "text": "Dream it. Wish it. Do it.",
+      "author": "Unknown",
+      "categories": ["Dreams", "Action", "Motivation"]
+    },
+    {
+      "id": "success-005",
+      "text": "Success doesn't just find you. You have to go out and get it.",
+      "author": "Unknown",
+      "categories": ["Success", "Action", "Determination"]
+    },
+    {
+      "id": "wisdom-002",
+      "text": "The harder you work for something, the greater you'll feel when you achieve it.",
+      "author": "Unknown",
+      "categories": ["Work", "Achievement", "Satisfaction"]
+    },
+    {
+      "id": "motivation-003",
+      "text": "Dream bigger. Do bigger.",
+      "author": "Unknown",
+      "categories": ["Dreams", "Action", "Ambition"]
+    },
+    {
+      "id": "progress-001",
+      "text": "Don't wait for opportunity. Create it.",
+      "author": "Unknown",
+      "categories": ["Opportunity", "Action", "Creation"]
+    },
+    {
+      "id": "mindset-002",
+      "text": "Sometimes we're tested not to show our weaknesses, but to discover our strengths.",
+      "author": "Unknown",
+      "categories": ["Strength", "Testing", "Discovery"]
+    },
+    {
+      "id": "motivation-004",
+      "text": "The key to success is to focus on goals, not obstacles.",
+      "author": "Unknown",
+      "categories": ["Success", "Focus", "Goals"]
+    },
+    {
+      "id": "dreams-004",
+      "text": "Dream it. Believe it. Build it.",
+      "author": "Unknown",
+      "categories": ["Dreams", "Belief", "Building"]
+    },
+    {
+      "id": "wisdom-003",
+      "text": "What lies behind us and what lies before us are tiny matters compared to what lies within us.",
+      "author": "Ralph Waldo Emerson",
+      "categories": ["Wisdom", "Inner Strength", "Perspective"]
+    },
+    {
+      "id": "change-002",
+      "text": "If you want to live a happy life, tie it to a goal, not to people or things.",
+      "author": "Albert Einstein",
+      "categories": ["Happiness", "Goals", "Life"]
+    },
+    {
+      "id": "inspiration-001",
+      "text": "Life is what happens to you while you're busy making other plans.",
+      "author": "John Lennon",
+      "categories": ["Life", "Planning", "Present"]
+    },
+    {
+      "id": "courage-002",
+      "text": "Spread love everywhere you go. Let no one ever come to you without leaving happier.",
+      "author": "Mother Teresa",
+      "categories": ["Love", "Kindness", "Happiness"]
+    },
+    {
+      "id": "wisdom-004",
+      "text": "When you reach the end of your rope, tie a knot in it and hang on.",
+      "author": "Franklin D. Roosevelt",
+      "categories": ["Perseverance", "Strength", "Hope"]
+    },
+    {
+      "id": "success-006",
+      "text": "Always remember that you are absolutely unique. Just like everyone else.",
+      "author": "Margaret Mead",
+      "categories": ["Uniqueness", "Humor", "Wisdom"]
+    },
+    {
+      "id": "motivation-005",
+      "text": "Don't judge each day by the harvest you reap but by the seeds that you plant.",
+      "author": "Robert Louis Stevenson",
+      "categories": ["Progress", "Patience", "Growth"]
+    },
+    {
+      "id": "inspiration-002",
+      "text": "It is during our darkest moments that we must focus to see the light.",
+      "author": "Aristotle",
+      "categories": ["Hope", "Perseverance", "Light"]
+    },
+    {
+      "id": "life-002",
+      "text": "You miss 100% of the shots you don't take.",
+      "author": "Wayne Gretzky",
+      "categories": ["Action", "Opportunity", "Risk"]
+    },
+    {
+      "id": "wisdom-005",
+      "text": "Whether you think you can or you think you can't, you're right.",
+      "author": "Henry Ford",
+      "categories": ["Mindset", "Belief", "Success"]
+    },
+    {
+      "id": "motivation-006",
+      "text": "I have learned throughout my life as a composer chiefly through my mistakes and pursuits of false assumptions.",
+      "author": "Igor Stravinsky",
+      "categories": ["Learning", "Mistakes", "Growth"]
+    },
+    {
+      "id": "success-007",
+      "text": "A person who never made a mistake never tried anything new.",
+      "author": "Albert Einstein",
+      "categories": ["Mistakes", "Innovation", "Risk"]
+    },
+    {
+      "id": "inspiration-003",
+      "text": "The person who says it cannot be done should not interrupt the person who is doing it.",
+      "author": "Chinese Proverb",
+      "categories": ["Action", "Determination", "Belief"]
+    },
+    {
+      "id": "life-003",
+      "text": "Life is really simple, but we insist on making it complicated.",
+      "author": "Confucius",
+      "categories": ["Life", "Simplicity", "Wisdom"]
+    },
+    {
+      "id": "motivation-007",
+      "text": "May you live all the days of your life.",
+      "author": "Jonathan Swift",
+      "categories": ["Life", "Living", "Presence"]
+    },
+    {
+      "id": "success-008",
+      "text": "Life is a succession of lessons which must be lived to be understood.",
+      "author": "Helen Keller",
+      "categories": ["Life", "Learning", "Understanding"]
+    },
+    {
+      "id": "wisdom-006",
+      "text": "You will face many defeats in life, but never let yourself be defeated.",
+      "author": "Maya Angelou",
+      "categories": ["Resilience", "Defeat", "Strength"]
+    },
+    {
+      "id": "inspiration-004",
+      "text": "In the end, it's not the years in your life that count. It's the life in your years.",
+      "author": "Abraham Lincoln",
+      "categories": ["Life", "Quality", "Time"]
+    },
+    {
+      "id": "motivation-008",
+      "text": "Never let the fear of striking out keep you from playing the game.",
+      "author": "Babe Ruth",
+      "categories": ["Fear", "Action", "Courage"]
+    },
+    {
+      "id": "success-009",
+      "text": "Money and success don't change people; they merely amplify what is already there.",
+      "author": "Will Smith",
+      "categories": ["Success", "Character", "Money"]
+    },
+    {
+      "id": "life-004",
+      "text": "Your time is limited, so don't waste it living someone else's life.",
+      "author": "Steve Jobs",
+      "categories": ["Time", "Authenticity", "Life"]
+    },
+    {
+      "id": "inspiration-005",
+      "text": "Not how long, but how well you have lived is the main thing.",
+      "author": "Seneca",
+      "categories": ["Life", "Quality", "Meaning"]
+    },
+    {
+      "id": "motivation-009",
+      "text": "If life were predictable it would cease to be life, and be without flavor.",
+      "author": "Eleanor Roosevelt",
+      "categories": ["Life", "Uncertainty", "Adventure"]
+    },
+    {
+      "id": "wisdom-007",
+      "text": "The whole secret of a successful life is to find out what is one's destiny to do, and then do it.",
+      "author": "Henry Ford",
+      "categories": ["Destiny", "Purpose", "Success"]
+    },
+    {
+      "id": "success-010",
+      "text": "In order to write about life first you must live it.",
+      "author": "Ernest Hemingway",
+      "categories": ["Life", "Experience", "Writing"]
+    },
+    {
+      "id": "inspiration-006",
+      "text": "Many of life's failures are people who did not realize how close they were to success when they gave up.",
+      "author": "Thomas A. Edison",
+      "categories": ["Failure", "Success", "Perseverance"]
+    },
+    {
+      "id": "motivation-010",
+      "text": "The way to get started is to quit talking and begin doing.",
+      "author": "Walt Disney",
+      "categories": ["Action", "Beginning", "Success"]
+    },
+    {
+      "id": "life-005",
+      "text": "Life is what happens when you're busy making other plans.",
+      "author": "John Lennon",
+      "categories": ["Life", "Present", "Planning"]
+    }
+  ]
+} 
